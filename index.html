@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Антифрод · Жизнь и аннуитеты</title>
+  <link rel="stylesheet" href="static/style.css?v=0.2.0">
+</head>
+<body>
+<div id="demo-banner" hidden>Демо-версия: данные вымышленные, движок работает прямо в браузере. Изменения хранятся только в этой вкладке и сбрасываются при перезагрузке.</div>
+<div id="loading" hidden><div class="loading-box"><div class="spinner"></div><div id="loading-text">Загрузка движка…</div></div></div>
+<header class="top">
+  <div class="brand">Антифрод <span>страхование жизни и аннуитеты</span></div>
+  <nav id="tabs">
+    <button data-tab="summary" class="active">Сводка</button>
+    <button data-tab="queue">Очередь</button>
+    <button data-tab="agents">Агенты</button>
+    <button data-tab="rules">Правила</button>
+    <button data-tab="calibration">Калибровка</button>
+    <button data-tab="data">Данные</button>
+    <button data-tab="audit">Журнал</button>
+  </nav>
+  <button id="theme" class="ghost" title="Сменить тему">◐</button>
+</header>
+
+<main>
+  <section id="tab-summary" class="tab active">
+    <div class="kpis" id="kpis"></div>
+    <div class="card">
+      <h2>Срабатывания по схемам</h2>
+      <p class="muted">Число дел, где сработало хотя бы одно правило схемы. Клик по строке открывает очередь с фильтром.</p>
+      <div id="scheme-chart" class="bars"></div>
+    </div>
+    <p class="muted" id="run-info"></p>
+  </section>
+
+  <section id="tab-queue" class="tab">
+    <div class="filters">
+      <input id="f-q" type="search" placeholder="Поиск: клиент, агент, ID, работодатель">
+      <select id="f-product"><option value="">Все продукты</option><option>ПА</option><option>ОСНС</option><option>НСЖ</option></select>
+      <select id="f-level"><option value="">Все уровни</option><option>высокий</option><option>средний</option><option>низкий</option></select>
+      <select id="f-scheme"><option value="">Все схемы</option></select>
+      <select id="f-status"><option value="">Все статусы</option></select>
+      <input id="f-assignee" placeholder="Исполнитель">
+      <label class="chk"><input id="f-flagged" type="checkbox" checked> только с флагами</label>
+    </div>
+    <div class="card table-wrap">
+      <table id="queue">
+        <thead><tr><th>Дело</th><th>Продукт</th><th>Клиент</th><th>Агент</th><th>Флаги</th><th>Статус</th><th class="score-col">Балл</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="pager"><span id="q-total"></span><button id="q-more" class="ghost">Показать ещё</button></div>
+    </div>
+  </section>
+
+  <section id="tab-agents" class="tab">
+    <div class="card table-wrap">
+      <table id="agents">
+        <thead><tr><th>Агент</th><th>Договоров</th><th>ПА</th><th>ОСНС</th><th>НСЖ</th><th>Ср. комиссия ПА, %</th><th>Выкуп НСЖ в 1-й год, %</th><th>Высокий риск</th><th>Сумма баллов</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-rules" class="tab">
+    <div class="card">
+      <h2>Пороги уровней</h2>
+      <form id="levels" class="inline">
+        <label>Высокий от <input name="high" type="number" min="1" max="100"></label>
+        <label>Средний от <input name="medium" type="number" min="1" max="99"></label>
+        <button>Сохранить</button>
+        <button type="button" id="reset-all" class="ghost">Сбросить все правила к исходным</button>
+      </form>
+      <p class="muted">Пороги и веса — стартовые значения для калибровки, а не нормы регулятора. Любое изменение сразу пересчитывает результаты и пишется в историю.</p>
+    </div>
+    <div id="rules-list"></div>
+    <div class="card">
+      <h2>История изменений</h2>
+      <div class="table-wrap"><table id="rules-history"><thead><tr><th>Когда</th><th>Кто</th><th>Правило</th><th>Что</th><th>Было</th><th>Стало</th><th>Версия</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="tab-calibration" class="tab">
+    <div class="card table-wrap">
+      <h2>Калибровка правил</h2>
+      <p class="muted">Точность = подтверждено / (подтверждено + ложные). По решениям аналитиков пересматривайте веса и пороги.</p>
+      <table id="calibration">
+        <thead><tr><th>Правило</th><th>Схема</th><th>Срабатываний</th><th>Подтверждено</th><th>Ложные</th><th>В проверке</th><th>Новые</th><th>Точность</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-data" class="tab">
+    <div class="card">
+      <h2>Импорт</h2>
+      <p class="muted">CSV (разделитель «;» или «,», UTF-8) или XLSX по шаблону. Обязательны столбцы <code>id</code> и <code>product</code>.</p>
+      <form id="import-form" class="inline">
+        <input type="file" name="file" accept=".csv,.xlsx" required>
+        <select name="mode"><option value="replace">Заменить витрину</option><option value="append">Дополнить</option></select>
+        <button>Загрузить</button>
+        <button type="button" class="ghost" data-download="/api/import/template">Шаблон CSV</button>
+      </form>
+      <pre id="import-report" class="report" hidden></pre>
+    </div>
+    <div class="card">
+      <h2>Экспорт результатов</h2>
+      <p><button type="button" data-download="/api/export?fmt=csv">Скачать CSV</button> <button type="button" data-download="/api/export?fmt=xlsx">Скачать XLSX</button></p>
+      <button id="recalc" class="ghost">Пересчитать баллы</button>
+    </div>
+  </section>
+
+  <section id="tab-audit" class="tab">
+    <div class="card table-wrap">
+      <table id="audit"><thead><tr><th>Когда</th><th>Кто</th><th>Действие</th><th>Объект</th><th>Детали</th></tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+</main>
+
+<aside id="drawer" hidden>
+  <div class="drawer-inner">
+    <button class="ghost close" id="drawer-close" aria-label="Закрыть">✕</button>
+    <div id="case"></div>
+  </div>
+</aside>
+<div id="toast" hidden></div>
+
+<script src="static/demo.js?v=0.2.0"></script>
+<script src="static/app.js?v=0.2.0"></script>
+</body>
+</html>
