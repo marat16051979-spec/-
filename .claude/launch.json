@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "antifraud",
+      "runtimeExecutable": "backend/.venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "uvicorn", "app.api.main:create_app", "--factory", "--app-dir", "backend", "--port", "8000"],
+      "port": 8000
+    }
+  ]
+}

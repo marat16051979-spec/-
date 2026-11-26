@@ -1,0 +1,26 @@
+# Реальные данные в репозиторий не попадают
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Редакторы и ОС
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Выгрузки
+exports/
+*.xlsx
+!backend/tests/fixtures/*.xlsx
