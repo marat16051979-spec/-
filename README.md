@@ -53,9 +53,9 @@ docker compose up --build
 во внутреннем контуре.
 
 Публикация: GitHub Actions (`.github/workflows/pages.yml`) при каждом push в `main` прогоняет тесты,
-собирает сайт (`python backend/tools/build_pages.py _site`) и публикует его. Один раз нужно включить:
-Settings → Pages → Build and deployment → Source: **GitHub Actions**. На бесплатном тарифе GitHub Pages
-работает только для публичных репозиториев.
+собирает сайт (`python backend/tools/build_pages.py _site`) и кладёт его в ветку `gh-pages`, откуда его
+раздаёт GitHub Pages (Settings → Pages → Deploy from a branch: `gh-pages`). Ветку `gh-pages` руками не правят.
+На бесплатном тарифе GitHub Pages работает только для публичных репозиториев.
 
 Проверить демо локально:
 
