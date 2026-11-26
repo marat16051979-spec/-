@@ -106,6 +106,13 @@ dl.fields dd { margin: 0; }
 .history li { margin-bottom: 4px; font-size: 13px; }
 .report { white-space: pre-wrap; background: var(--bg); padding: 10px; border-radius: 6px; max-height: 320px; overflow: auto; }
 
+#demo-banner { background: var(--mid-bg); color: var(--mid); padding: 8px 20px; font-size: 13px; text-align: center; }
+#demo-banner[hidden], #loading[hidden] { display: none; }
+#loading { position: fixed; inset: 0; z-index: 30; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.loading-box { display: flex; flex-direction: column; align-items: center; gap: 14px; color: var(--muted); padding: 16px; text-align: center; }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 8px 16px; border-radius: 8px; z-index: 20; }
 
 @media (max-width: 720px) {

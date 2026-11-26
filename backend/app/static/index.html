@@ -4,9 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Антифрод · Жизнь и аннуитеты</title>
-  <link rel="stylesheet" href="/static/style.css?v=0.1.1">
+  <link rel="stylesheet" href="static/style.css?v=0.2.0">
 </head>
 <body>
+<div id="demo-banner" hidden>Демо-версия: данные вымышленные, движок работает прямо в браузере. Изменения хранятся только в этой вкладке и сбрасываются при перезагрузке.</div>
+<div id="loading" hidden><div class="loading-box"><div class="spinner"></div><div id="loading-text">Загрузка движка…</div></div></div>
 <header class="top">
   <div class="brand">Антифрод <span>страхование жизни и аннуитеты</span></div>
   <nav id="tabs">
@@ -97,13 +99,13 @@
         <input type="file" name="file" accept=".csv,.xlsx" required>
         <select name="mode"><option value="replace">Заменить витрину</option><option value="append">Дополнить</option></select>
         <button>Загрузить</button>
-        <a href="/api/import/template" class="btn ghost">Шаблон CSV</a>
+        <button type="button" class="ghost" data-download="/api/import/template">Шаблон CSV</button>
       </form>
       <pre id="import-report" class="report" hidden></pre>
     </div>
     <div class="card">
       <h2>Экспорт результатов</h2>
-      <p><a class="btn" href="/api/export?fmt=csv">Скачать CSV</a> <a class="btn" href="/api/export?fmt=xlsx">Скачать XLSX</a></p>
+      <p><button type="button" data-download="/api/export?fmt=csv">Скачать CSV</button> <button type="button" data-download="/api/export?fmt=xlsx">Скачать XLSX</button></p>
       <button id="recalc" class="ghost">Пересчитать баллы</button>
     </div>
   </section>
@@ -123,6 +125,7 @@
 </aside>
 <div id="toast" hidden></div>
 
-<script src="/static/app.js?v=0.1.1"></script>
+<script src="static/demo.js?v=0.2.0"></script>
+<script src="static/app.js?v=0.2.0"></script>
 </body>
 </html>

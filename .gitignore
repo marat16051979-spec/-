@@ -24,3 +24,7 @@ Thumbs.db
 exports/
 *.xlsx
 !backend/tests/fixtures/*.xlsx
+
+# Сборка демо для GitHub Pages
+_site/
+_pages_preview/

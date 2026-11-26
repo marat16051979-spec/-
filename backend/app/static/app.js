@@ -10,6 +10,7 @@ let META = null;
 const Q = { offset: 0, limit: 100 };
 
 async function api(path, opts = {}) {
+  if (window.apiReady) await window.apiReady;  // демо-режим: ждём запуска движка в браузере
   const res = await fetch(path, opts);
   if (!res.ok) {
     let msg = res.statusText;
@@ -270,6 +271,22 @@ $("#import-form").onsubmit = async (e) => {
     out.hidden = false;
   }
 };
+// Скачивание файлов через fetch: работает и с сервером, и в демо-режиме.
+$$("[data-download]").forEach((btn) => (btn.onclick = async () => {
+  try {
+    if (window.apiReady) await window.apiReady;
+    const res = await fetch(btn.dataset.download);
+    if (!res.ok) throw new Error(res.statusText);
+    const name = (res.headers.get("Content-Disposition") || "").match(/filename=([^;]+)/)?.[1] || "download";
+    const url = URL.createObjectURL(await res.blob());
+    const a = Object.assign(document.createElement("a"), { href: url, download: name });
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (err) { toast("Не удалось скачать: " + err.message); }
+}));
+
 $("#recalc").onclick = async () => {
   const r = await api("/api/recalculate", { method: "POST" });
   toast(`Пересчитано дел: ${r.n_cases}`);

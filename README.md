@@ -37,6 +37,33 @@ uvicorn app.api.main:create_app --factory --reload
 docker compose up --build
 ```
 
+## Демо на GitHub Pages
+
+Адрес: https://marat16051979-spec.github.io/-/
+
+Сервера у демо нет. Тот же Python-код движка и API (`app/api/handlers.py`) работает прямо в браузере
+через [Pyodide](https://pyodide.org) (`app/demo_bridge.py`, `app/static/demo.js`), а база — SQLite в памяти вкладки.
+При открытии загружаются вымышленные данные из `sample.csv`. Изменения видит только сам посетитель,
+и они сбрасываются при перезагрузке страницы. Первый запуск занимает 5–15 секунд.
+
+**Не загружайте в демо реальные данные клиентов.** Сам файл не уходит в интернет, но страница
+публичная, а Pyodide загружается с внешнего CDN. Это противоречит требованиям PRD о размещении
+во внутреннем контуре.
+
+Публикация: GitHub Actions (`.github/workflows/pages.yml`) при каждом push в `main` прогоняет тесты,
+собирает сайт (`python backend/tools/build_pages.py _site`) и публикует его. Один раз нужно включить:
+Settings → Pages → Build and deployment → Source: **GitHub Actions**. На бесплатном тарифе GitHub Pages
+работает только для публичных репозиториев.
+
+Проверить демо локально:
+
+```bash
+python backend/tools/build_pages.py _pages_preview/-
+python -m http.server 8001 --directory _pages_preview
+```
+
+и открыть http://localhost:8001/-/?demo=1.
+
 ## Загрузка данных
 
 1. Вкладка **Данные** → выберите CSV или XLSX → **Загрузить**. «Заменить витрину» удаляет прежние дела,
